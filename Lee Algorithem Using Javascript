@@ -1,0 +1,77 @@
+//Lee Algorithem
+function point(x, y)
+{
+  this.x = x;
+  this.y = y;
+}
+function node(pnt,distance)
+{
+  this.pnt = pnt;
+  this.distance = distance;
+}
+var D = [
+  {x: 0, y: 1},
+  {x: 1, y: 0},
+  {x: 0, y: -1},
+  {x: -1, y: 0}
+];
+function bfs(Maze, src, Dest)
+{
+  var minDist = -1;
+    if (Maze[src.x][src.y] != 1 || Maze[Dest.x][Dest.y] != 1)
+      return minDist;
+  var h = Maze.length;
+  var w = Maze[0].length;
+  visited = [];
+  for (var i = 0; i < h; i++) 
+  {
+    visited.push([]);
+    for (var j = 0; j < w; j++)
+    {
+      visited[i].push(false);
+    }
+  }
+  var queue = [];
+  var s = new node(src, 0);
+  queue.push(s);
+  while (queue.length>0) 
+  {
+    var curr = queue.pop();
+    var pnt = curr.pnt;
+    if (pnt.x == Dest.x && pnt.y == Dest.y)
+      return curr.dist;
+    for (var i = 0; i < 4; i++)
+    {
+      var row = pnt.x + D[i].x;
+      var col = pnt.y + D[i].y;
+      if (Valid(Maze, visited, h, w, row, col)) 
+      {
+        visited[row][col] = true;
+        var adjCell = new node(new point(row, col), curr.distance + 1);
+        queue.push(adjCell);
+      }
+    }
+  }
+  return minDist;
+}
+function Valid(Maze, visited, width, height, row, col)
+{
+  return (row >= 0) && (row < width) && (col >= 0) && (col < height) && Maze[row][col] == 1 && !visited[row][col];
+}
+
+var Maze = [
+  [ 1, 0, 1, 1, 1 ],
+[ 1, 0, 1, 0, 1 ], 
+[ 1, 1, 1, 0, 1 ], 
+[ 0, 0, 0, 0, 1 ], 
+[ 1, 1, 1, 0, 1 ]
+];
+var source = new point(0, 0);
+var Dest = new point(3, 4);
+var distance = bfs(Maze, source, Dest);
+if (distance != -1)
+  console.log(`The Shortest path of the matrix showing from(${source.x}, ${source.y}) to (${Dest.x}, ${Dest.y}) has length ${distance}\n`);
+else
+  console.log(`Shortest path from of the matrix showing ${(source.x, source.y)} to ${(Dest.x, Dest.y)} does not exist`);
+  //Output-
+  //The Shortest path of the matrix showing from(0, 0) to (3, 4) has length undefined

@@ -1,0 +1,85 @@
+//Lee Algorithem
+#include<iostream.h>
+#include<conio.h>
+#define ROW 9
+#define COL 10
+struct Point
+{
+    int X;
+    int Y;
+};
+struct queueNode
+{
+    Point pnt; 
+    int distance;  
+};
+bool isValid(int row, int col)
+{
+    return (row >= 0) && (row < ROW) &&
+           (col >= 0) && (col < COL);
+}
+int rowNum[] = {-1, 0, 0, 1};
+int colNum[] = {0, -1, 1, 0};
+int LEE(int mat[][COL], Point src, Point dest)
+{
+    if (!mat[src.X][src.Y] || !mat[dest.X][dest.Y])
+        return -1;
+ 
+    bool visited[ROW][COL];
+    memset(visited, false, sizeof visited);
+    visited[src.X][src.Y] = true;
+    queue<queueNode> q;
+    queueNode s = {src, 0};
+    q.push(s);  
+    while (!q.empty())
+    {
+        queueNode curr = q.front();
+        Point pnt = curr.pnt;
+        if (pnt.X == dest.X && pnt.Y == dest.Y)
+            return curr.distance;
+        q.pop();
+ 
+        for (int i = 0; i < 4; i++)
+        {
+            int row = pnt.X + rowNum[i];
+            int col = pnt.Y + colNum[i];
+            if (isValid(row, col) && mat[row][col] &&
+               !visited[row][col])
+            {
+                visited[row][col] = true;
+                queueNode Adjcell = { {row, col},curr.distance + 1 };
+                q.push(Adjcell);
+            }
+        }
+    }
+    return -1;
+}
+int main()
+{
+    int mat[ROW][COL] =
+    {
+        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
+        { 1, 0, 1, 0, 1, 1, 1, 0, 1, 1 },
+        { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 },
+        { 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
+        { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 },
+        { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 },
+        { 1, 0, 0, 0, 1, 1, 0, 0, 0, 1 },
+        { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 },
+        { 1, 1, 0, 0, 0, 1, 1, 0, 0, 1 }
+    };
+ 
+    Point source = {0, 0};
+    Point dest = {8, 6};
+ 
+    int distance = LEE(mat, source, dest);
+ 
+    if (distance != -1)
+        cout << "Shortest Path length is: " << distance ;
+    else
+        cout << "Shortest Path doesn't exist";
+ 
+    getch();
+}
+//Output:
+//Shortest Path length is: 18
